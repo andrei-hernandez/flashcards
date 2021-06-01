@@ -7,8 +7,9 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 
 const client = new ApolloClient({
-  uri: 'http://34.73.58.215/graphql',
-  cache: new InMemoryCache()
+  uri: 'http://localhost:8000/graphql',
+  cache: new InMemoryCache(),
+  headers: { 'Access-Control-Allow-Origin': '*' }
 });
 
 ReactDOM.render(

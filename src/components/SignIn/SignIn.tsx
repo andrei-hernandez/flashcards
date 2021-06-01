@@ -1,7 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import { LOG_IN } from '../../queries/index';
 import { LockClosedIcon } from '@heroicons/react/solid';
 import { Link } from 'react-router-dom';
 const SignIn = () => {
+  let res: any;
+
+  const [logIn, { data, loading }] = useLazyQuery(LOG_IN, { onCompleted: (data: any) => res = data });
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (e: any): Promise<any> => {
+    e.preventDefault();
+    console.log('is clicked');
+    logIn({ variables: { email, password } });
+
+    console.log(res, data, loading);
+  }
+
+  const handleInputChange = (e: any) => {
+    if (e.target.name === 'email') {
+      setEmail(e.target.value)
+    }
+    if (e.target.name === 'password') {
+      setPassword(e.target.value)
+    }
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
@@ -34,6 +60,7 @@ const SignIn = () => {
                   Email address
                 </label>
                 <input
+                  onChange={handleInputChange}
                   id="email-address"
                   name="email"
                   type="email"
@@ -48,6 +75,7 @@ const SignIn = () => {
                   Password
                 </label>
                 <input
+                  onChange={handleInputChange}
                   id="password"
                   name="password"
                   type="password"
@@ -60,6 +88,7 @@ const SignIn = () => {
             </div>
             <div>
               <button
+                onClick={handleSubmit}
                 type="submit"
                 className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >

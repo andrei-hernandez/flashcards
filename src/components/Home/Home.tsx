@@ -43,9 +43,9 @@ const Home = () => {
   ];
 
   return (
-    <div className="grid main">
+    <div className="static max-w-screen">
       <Navbar />
-      <div className="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-8 pb-4 mt-8 mb-4 md:grid-cols-2 xl:grid-cols-4">
         {data.map((item) => (
           <div className="flex flex-col ">
             <div className="p-4 bg-white shadow-md rounded-3xl">
@@ -83,7 +83,7 @@ const Home = () => {
           </div>
         ))}
       </div>
-      <Footer />
+      <Footer position={'relative'} />
     </div>
   );
 }

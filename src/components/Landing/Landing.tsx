@@ -4,7 +4,7 @@ import Footer from '../Footer/Footer';
 
 const Landing = () => {
   return (
-    <>
+    <div className="static max-w-screen">
       <Navbar />
       <div className="content">
         <div className="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 xl:grid-cols-2">
@@ -41,8 +41,8 @@ const Landing = () => {
           </div>
         </div>
       </div>
-      <Footer />
-    </>
+      <Footer position={'absolute'} />
+    </div>
   );
 }
 

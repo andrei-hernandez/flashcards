@@ -1,9 +1,10 @@
 import React from 'react';
 
-const Footer = () => {
+const Footer = ({ position }: any): JSX.Element => {
+
   return (
-    <div className="w-screen mt-6 realtive">
-      <div className="bg-gray-100 bottom ">
+    <div className={`${position} bottom-0 w-full max-w-full mt-4`}>
+      <div className="bottom-0 w-screen bg-gray-100">
         <div className="flex flex-wrap justify-center max-w-6xl m-auto text-gray-800">
           <div className="w-48 p-5 ">
             <div className="text-xs font-medium text-gray-500 uppercase">User</div>
@@ -74,7 +75,6 @@ const Footer = () => {
         </div>
       </div>
     </div>
-
   );
 }
 

@@ -42,6 +42,9 @@ const Home = () => {
     }
   ];
 
+  const tokenLS: any = localStorage.getItem('token');
+  console.log(`the token is: ${tokenLS}`);
+
   return (
     <div className="static max-w-screen">
       <Navbar />

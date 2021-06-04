@@ -1,57 +1,120 @@
-import React from 'react';
-import Footer from '../Footer/Footer';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
+import { Dialog, Transition } from '@headlessui/react';
+import { useEffect, useState, Fragment } from 'react';
+import { GET_FCARDS, DELETE_FCARD, GET_ONE_FCARD, EDIT_FCARD } from '../../queries/index';
 import Navbar from '../Navbar/Navbar';
+import FCardForm from './FCardForm';
 
 const Home = () => {
 
-  const data = [
-    {
-      title: 'This is a simple title test',
-      author: 'The author is: ME',
-      content: 'This is an example from a Flash Card on this app. Lorem ipsum dolor sit amet consectetur adipisicing elit.Mollitia, fuga quis harum officia maxime nulla, fugiat nobis blanditiis repudiandae iste at, omnis magnam sint tenetur provident impedit corporis sit laudantium?',
-      createdAt: 'hace 3 días',
-      editedAt: 'hace 2 días'
-    },
-    {
-      title: 'This is a simple title test',
-      author: 'The author is: ME',
-      content: 'This is an example from a Flash Card on this app. Lorem ipsum dolor sit amet consectetur adipisicing elit.Mollitia, fuga quis harum officia maxime nulla, fugiat nobis blanditiis repudiandae iste at, omnis magnam sint tenetur provident impedit corporis sit laudantium?',
-      createdAt: 'hace 3 días',
-      editedAt: 'hace 2 días'
-    },
-    {
-      title: 'This is a simple title test',
-      author: 'The author is: ME',
-      content: 'This is an example from a Flash Card on this app. Lorem ipsum dolor sit amet consectetur adipisicing elit.Mollitia, fuga quis harum officia maxime nulla, fugiat nobis blanditiis repudiandae iste at, omnis magnam sint tenetur provident impedit corporis sit laudantium?',
-      createdAt: 'hace 3 días',
-      editedAt: 'hace 2 días'
-    },
-    {
-      title: 'This is a simple title test',
-      author: 'The author is: ME',
-      content: 'This is an example from a Flash Card on this app. Lorem ipsum dolor sit amet consectetur adipisicing elit.Mollitia, fuga quis harum officia maxime nulla, fugiat nobis blanditiis repudiandae iste at, omnis magnam sint tenetur provident impedit corporis sit laudantium?',
-      createdAt: 'hace 3 días',
-      editedAt: 'hace 2 días'
-    },
-    {
-      title: 'This is a simple title test',
-      author: 'AndiUchiha',
-      content: 'This is an example from a Flash Card on this app. Lorem ipsum dolor sit amet consectetur adipisicing elit.Mollitia, fuga quis harum officia maxime nulla, fugiat nobis blanditiis repudiandae iste at, omnis magnam sint tenetur provident impedit corporis sit laudantium?',
-      createdAt: 'hace 3 días',
-      editedAt: 'hace 2 días'
-    }
-  ];
+  const [jwt, setJwt] = useState<string | null>('');
 
-  const tokenLS: any = localStorage.getItem('token');
-  console.log(`the token is: ${tokenLS}`);
+  useEffect(() => {
+    const storedJwt = localStorage.getItem('token');
+    setJwt(storedJwt)
+  }, [jwt]);
+
+  const [Data, setData] = useState({ getFlashCards: [] });
+  const { data, refetch } = useQuery(GET_FCARDS, { variables: { token: jwt } });
+
+  useEffect(() => {
+    setData(data);
+  }, [Data, data]);
+
+  //delete graphql query
+  const [deleteFCard] = useMutation(DELETE_FCARD, {
+    onCompleted: async (): Promise<void> => {
+      await refetch();
+    }
+  });
+
+  const handleDeleteClick = async (e: any): Promise<void> => {
+    e.preventDefault();
+    await deleteFCard({ variables: { id: e.target.value, token: localStorage.getItem('token') } });
+  }
+
+  //add or edit modal form
+  let [isOpen, setIsOpen] = useState(false);
+  const [CardId, setCardId] = useState('');
+  const [Action, setAction] = useState('');
+  let [Title, setTitle] = useState('');
+  let [Content, setContent] = useState('');
+
+  const openModal = () => {
+    setIsOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsOpen(false)
+  }
+
+  //getOneQuery grapghql
+
+  const [getOneFCard] = useLazyQuery(GET_ONE_FCARD, {
+    onCompleted: (data) => storeData(data), fetchPolicy: "network-only"
+  });
+
+  const handleEditClick = (e: any) => {
+    setCardId(e.target.value);
+    setAction(e.target.name);
+    getOneFCard({ variables: { token: jwt, id: e.target.value } });
+  }
+
+  const storeData = (data: any) => {
+    setTitle(data?.getOneFlashCard?.title);
+    setContent(data?.getOneFlashCard?.content);
+    openModal();
+  }
+
+  //edit one mutation grapghql
+  const [editFCard] = useMutation(EDIT_FCARD, {
+    onCompleted: async (): Promise<void> => {
+      await refetch();
+    }
+  });
+
+
+  const editFcardMutation = async (): Promise<void> => {
+    await editFCard({ variables: { id: CardId, token: jwt, title: Title, content: Content } });
+  }
+
+  const handleSaveClick = async (e: any): Promise<void> => {
+    e.preventDefault();
+    if ('Edit' === e.target.value) {
+      await editFcardMutation();
+      closeModal();
+      setIsOpen(false);
+      clearEditForm();
+    } else if ('Create') {
+      console.log("r u creating hehe");
+    } else {
+      console.log("what are you doing XD?");
+    }
+  }
+
+  const handleInputChange = (e: any) => {
+    if (e.target.name === 'card_title') {
+      setTitle(e.target.value)
+    }
+    if (e.target.name === 'card_content') {
+      setContent(e.target.value)
+    }
+  }
+
+  const clearEditForm = () => {
+    setTitle('');
+    setContent('');
+    setCardId('');
+    setAction('');
+  }
 
   return (
     <div className="static max-w-screen">
       <Navbar />
       <div className="grid grid-cols-1 gap-8 pb-4 mt-8 mb-4 md:grid-cols-2 xl:grid-cols-4">
-        {data.map((item) => (
-          <div className="flex flex-col ">
-            <div className="p-4 bg-white shadow-md rounded-3xl">
+        {Data?.getFlashCards.map((item: any) => (
+          <div className="flex flex-col" key={item.id}>
+            <div className="p-4 bg-white shadow-md rouopenModalnded-3xl">
               <div className="flex-none lg:flex">
                 <div className="flex-auto py-2 ml-3 justify-evenly">
                   <div className="flex flex-wrap ">
@@ -72,11 +135,21 @@ const Home = () => {
                   <div className="flex p-4 pb-2 border-t border-gray-200 " />
                   <div className="flex space-x-3 text-sm font-medium">
                     <div className="flex flex-auto space-x-3">
-                      <button className="inline-flex items-center px-5 py-2 mb-2 space-x-2 tracking-wider text-white bg-red-500 border-t rounded-full shadow-md">Delete
+                      <button
+                        onClick={handleDeleteClick}
+                        value={item.id}
+                        className="inline-flex items-center px-5 py-2 mb-2 space-x-2 tracking-wider text-white bg-red-500 border-t rounded-full shadow-md"
+                      >
+                        Delete
                       </button>
                     </div>
                     <div className="flex flex-left">
-                      <button className="inline-flex items-center px-5 py-2 mb-2 space-x-2 tracking-wider text-white bg-blue-500 border-t rounded-full shadow-md">Edit
+                      <button
+                        name="Edit"
+                        type="button"
+                        value={item.id}
+                        onClick={handleEditClick}
+                        className="inline-flex items-center px-5 py-2 mb-2 space-x-2 tracking-wider text-white bg-blue-500 border-t rounded-full shadow-md">Edit
                       </button>
                     </div>
                   </div>
@@ -86,7 +159,58 @@ const Home = () => {
           </div>
         ))}
       </div>
-      <Footer position={'relative'} />
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 z-10 overflow-y-auto backdrop-filter backdrop-grayscale backdrop-blur-md backdrop-contrast-200"
+          onClose={closeModal}
+        >
+          <div className="min-h-screen px-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Dialog.Overlay className="fixed inset-0" />
+            </Transition.Child>
+            <span
+              className="inline-block h-screen align-middle"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <div className="inline-block w-full max-w-xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl xl:max-w-4xl rounded-2xl">
+                <Dialog.Title
+                  as="h3"
+                  className="pt-2 text-lg font-medium leading-6 text-center text-gray-900"
+                >
+                  Create a new card
+                </Dialog.Title>
+                <FCardForm
+                  handleInputChange={handleInputChange}
+                  titleValue={Title}
+                  contentValue={Content}
+                  handleSaveClick={handleSaveClick}
+                  action={Action}
+                />
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   );
 }

@@ -5,23 +5,27 @@ import Landing from './components/Landing/Landing';
 import Home from './components/Home/Home';
 import SignUp from './components/SignUp/SignUp';
 import LogIn from './components/SignIn/SignIn';
+import Modal from './components/Home/Modal';
 
 function App() {
   return (
     <Router>
       <Switch>
         <Route exact path="/">
-          <Landing/>
+          <Landing />
         </Route>
         <Route path="/home">
-          <Home/>
+          <Home />
         </Route>
         <Route path="/signup">
-          <SignUp/>
+          <SignUp />
         </Route>
         <Route path="/signin">
-          <LogIn/>
-        </Route>        
+          <LogIn />
+        </Route>
+        <Route path="/modal">
+          <Modal />
+        </Route>
       </Switch>
     </Router>
   );

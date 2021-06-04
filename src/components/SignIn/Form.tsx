@@ -8,22 +8,16 @@ const Form = ({ handleInputChange = (e: any) => { }, handleSubmit = (e: any) => 
       <div className="w-full max-w-md space-y-8">
         <div>
           <Link to="/">
-            <a href="/#">
-              <img
-                className="w-auto h-12 mx-auto"
-                src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                alt="Workflow"
-              />
-            </a>
+            <img
+              className="w-auto h-12 mx-auto"
+              src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+              alt="Workflow"
+            />
           </Link>
           <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">Sign in to your account</h2>
           <p className="mt-2 text-sm text-center text-gray-600">
             Or{' '}
-            <Link to='/signup'>
-              <a href="/#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                create a new account
-              </a>
-            </Link>
+            <Link to='/signup' className="font-medium text-indigo-600 hover:text-indigo-500" />
           </p>
         </div>
         <form className="mt-8 space-y-6" action="#" method="POST">

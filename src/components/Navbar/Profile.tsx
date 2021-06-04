@@ -9,7 +9,7 @@ const Profile = () => {
   }
 
   return (
-    <div>
+    <div key="profile">
       {/* Profile dropdown */}
       <Menu as="div" className="relative ml-3">
         {({ open }) => (
@@ -41,6 +41,7 @@ const Profile = () => {
                 <Menu.Item>
                   {({ active }) => (
                     <a
+                      key="anchor1"
                       href="/#"
                       className={classNames(
                         active ? 'bg-gray-100' : '',
@@ -54,6 +55,7 @@ const Profile = () => {
                 <Menu.Item>
                   {({ active }) => (
                     <a
+                      key="anchor2"
                       href="/#"
                       className={classNames(
                         active ? 'bg-gray-100' : '',
@@ -67,6 +69,7 @@ const Profile = () => {
                 <Menu.Item>
                   {({ active }) => (
                     <a
+                      key="anchor3"
                       href="/#"
                       className={classNames(
                         active ? 'bg-gray-100' : '',

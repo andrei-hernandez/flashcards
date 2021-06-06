@@ -1,0 +1,7 @@
+.svg-add:focus {
+  outline: none;
+}
+
+.svg-add {
+  border-radius: 50%;
+}

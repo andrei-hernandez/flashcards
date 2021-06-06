@@ -1,9 +1,10 @@
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import { Dialog, Transition } from '@headlessui/react';
 import { useEffect, useState, Fragment } from 'react';
-import { GET_FCARDS, DELETE_FCARD, GET_ONE_FCARD, EDIT_FCARD } from '../../queries/index';
+import { GET_FCARDS, DELETE_FCARD, GET_ONE_FCARD, EDIT_FCARD, CREATE_FCARD } from '../../queries/index';
 import Navbar from '../Navbar/Navbar';
 import FCardForm from './FCardForm';
+import './style.css';
 
 const Home = () => {
 
@@ -73,9 +74,20 @@ const Home = () => {
     }
   });
 
-
   const editFcardMutation = async (): Promise<void> => {
     await editFCard({ variables: { id: CardId, token: jwt, title: Title, content: Content } });
+  }
+
+  //create card graphql mutation
+  const [createFCard] = useMutation(CREATE_FCARD, {
+    onCompleted: async (): Promise<void> => {
+      await refetch();
+      setIsOpen(false);
+    }
+  });
+
+  const createFcardMutation = async (): Promise<void> => {
+    await createFCard({ variables: { token: jwt, title: Title, content: Content } });
   }
 
   const handleSaveClick = async (e: any): Promise<void> => {
@@ -84,9 +96,11 @@ const Home = () => {
       await editFcardMutation();
       closeModal();
       setIsOpen(false);
-      clearEditForm();
+      clearCardForm();
     } else if ('Create') {
-      console.log("r u creating hehe");
+      await createFcardMutation();
+      setIsOpen(false);
+      clearCardForm();
     } else {
       console.log("what are you doing XD?");
     }
@@ -94,14 +108,14 @@ const Home = () => {
 
   const handleInputChange = (e: any) => {
     if (e.target.name === 'card_title') {
-      setTitle(e.target.value)
+      setTitle(e.target.value);
     }
     if (e.target.name === 'card_content') {
-      setContent(e.target.value)
+      setContent(e.target.value);
     }
   }
 
-  const clearEditForm = () => {
+  const clearCardForm = () => {
     setTitle('');
     setContent('');
     setCardId('');
@@ -114,7 +128,7 @@ const Home = () => {
       <div className="grid grid-cols-1 gap-8 pb-4 mt-8 mb-4 md:grid-cols-2 xl:grid-cols-4">
         {Data?.getFlashCards.map((item: any) => (
           <div className="flex flex-col" key={item.id}>
-            <div className="p-4 bg-white shadow-md rouopenModalnded-3xl">
+            <div className="p-4 bg-white shadow-md rounded-3xl">
               <div className="flex-none lg:flex">
                 <div className="flex-auto py-2 ml-3 justify-evenly">
                   <div className="flex flex-wrap ">
@@ -158,6 +172,26 @@ const Home = () => {
             </div>
           </div>
         ))}
+        <div className="flex flex-col">
+          <div className="p-4 bg-white">
+            <div className="flex-none lg:flex">
+              <div className="flex-auto py-2 ml-3 justify-evenly">
+                <div className="flex flex-wrap ">
+                  <p className="flex-auto mt-3 text-base text-center font-small">
+                    <button
+                      value="Create"
+                      onClick={openModal}
+                      className="rounded-full focus:outline-none focus:ring-4 focus:ring-gray-400 focus:ring-offset-0 focus:ring-offset-gray-400 focus:ring-opacity-70">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-24 h-24 p-0 m-0 text-gray-400 rounded-full hover:text-gray-500 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path className="p-0 m-0 rounded-full focus:ring svg-add" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog

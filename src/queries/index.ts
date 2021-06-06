@@ -44,3 +44,9 @@ export const GET_ONE_FCARD = gql`
     }
 }
 `
+
+export const CREATE_FCARD = gql`
+  mutation addFCard($title: String!, $content: String!, $token: String!){
+  createFCard(fcard: {title: $title, content: $content, token: $token})
+}
+`

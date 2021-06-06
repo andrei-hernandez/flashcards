@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { LOG_IN } from '../../queries/index';
 import { Redirect } from 'react-router-dom';
 import Form from './Form';
 const SignIn = () => {
+
+  const [token, setToken] = useState(null);
+  const [tokenOnRenderExists, setTokenOnRenderExists] = useState(false);
+
+  useEffect(() => {
+    const tokenOnRender: any = localStorage.getItem('token');
+    if (tokenOnRender) {
+      setTokenOnRenderExists(true);
+    } else {
+      setTokenOnRenderExists(false);
+    }
+  }, [tokenOnRenderExists]);
 
   const [logIn, { data, loading }] = useLazyQuery(LOG_IN, {
     onCompleted: (data: any) => {
@@ -13,7 +25,6 @@ const SignIn = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [token, setToken] = useState('')
   const [tokenExists, setTokenExists] = useState(false);
 
   const handleInputChange = (e: any) => {
@@ -47,6 +58,14 @@ const SignIn = () => {
       <Form handleInputChange={handleInputChange} handleSubmit={handleSubmit} />
       {
         tokenExists && <Redirect
+          to={{
+            pathname: "/home",
+            state: { token: token }
+          }}
+        />
+      }
+      {
+        tokenOnRenderExists && <Redirect
           to={{
             pathname: "/home",
             state: { token: token }

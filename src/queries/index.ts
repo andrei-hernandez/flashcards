@@ -10,6 +10,12 @@ export const LOG_IN = gql`
   }
 `
 
+export const CREATE_USER = gql`
+  mutation createUser($userName: String!, $email: String!, $password: String!){
+  createUser(user: {userName: $userName, email: $email, password: $password})
+}
+`
+
 export const GET_FCARDS = gql`
   query getFCards($token: String!){
     getFlashCards(token: $token) {

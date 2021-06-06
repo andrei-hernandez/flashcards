@@ -1,11 +1,12 @@
 import React from 'react';
+import './styles.css'
 
 const Footer = ({ position }: any): JSX.Element => {
 
   return (
-    <div className={`${position} bottom-0 w-full max-w-full mt-4`}>
-      <div className="bottom-0 w-screen bg-gray-100">
-        <div className="flex flex-wrap justify-center max-w-6xl m-auto text-gray-800">
+    <div className={`${position} bottom-0 w-screen max-w-screen mt-4`} id="footer">
+      <div className="bottom-0 w-auto bg-gray-100">
+        <div className="flex flex-wrap justify-center w-auto m-auto text-gray-800">
           <div className="w-48 p-5 ">
             <div className="text-xs font-medium text-gray-500 uppercase">User</div>
             <a className="block my-3" href="/#">Sign in <span className="p-1 text-xs text-teal-600" /></a>

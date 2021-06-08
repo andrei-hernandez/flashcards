@@ -50,7 +50,7 @@ const Form = ({ handleInputChange = (e: any) => { }, handleSubmit = (e: any) => 
                   id="userName"
                   name="userName"
                   type="text"
-                  autoComplete="username"
+                  autoComplete="user"
                   required
                   className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="User Name"
@@ -65,7 +65,7 @@ const Form = ({ handleInputChange = (e: any) => { }, handleSubmit = (e: any) => 
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Password"

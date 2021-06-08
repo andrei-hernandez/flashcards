@@ -26,7 +26,7 @@ const SignUp = () => {
 
   const [createUser] = useMutation(CREATE_USER, {
     onCompleted: (data: any) => {
-      checkErrors(data)
+      checkErrors(data);
     }
   });
 
@@ -40,10 +40,11 @@ const SignUp = () => {
     logIn({ variables: { email, password } });
   }
 
-  const checkErrors = (data: any) => {
+  const checkErrors = async (data: any) => {
     if (data?.createUser?.err || data.createUser?.hasCreated === false) {
       toast.error(`${data?.createUser?.err?.errorDesc}, use another email`, { duration: 2300, });
     } else if (data.createUser?.hasCreated === true) {
+      await toast.success('Account Created');
       LogInQuery();
     }
   }

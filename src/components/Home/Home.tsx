@@ -157,7 +157,6 @@ const Home = () => {
   const handleSignOutClick = () => {
     localStorage.removeItem('token');
     setHasSignedOut(true);
-    console.log(HasSignedOut);
   }
 
   return (

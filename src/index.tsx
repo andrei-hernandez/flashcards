@@ -5,9 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const client = new ApolloClient({
-  uri: 'http://34.73.58.215:4000/graphql',
+  uri: `${process.env.REACT_APP_API_URL}`,
   cache: new InMemoryCache(),
   headers: { 'Access-Control-Allow-Origin': '*' }
 });

@@ -1,5 +1,5 @@
-import { LockClosedIcon } from '@heroicons/react/outline';
 import React from 'react';
+import { Toaster } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
 const Form = ({ handleInputChange = (e: any) => { }, handleSubmit = (e: any) => { } }) => {
@@ -78,15 +78,21 @@ const Form = ({ handleInputChange = (e: any) => { }, handleSubmit = (e: any) => 
                 onClick={handleSubmit}
                 className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <LockClosedIcon className="w-5 h-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
-                </span>
                 Sign Up
               </button>
             </div>
           </div>
         </form>
+        <p className="mt-1 text-sm text-center text-gray-600">
+          <Link to='/' className="font-medium text-indigo-600 hover:text-indigo-500">
+            Return to home
+          </Link>
+        </p>
       </div>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
     </div >
   );
 }

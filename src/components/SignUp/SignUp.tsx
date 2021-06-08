@@ -1,5 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Redirect } from 'react-router-dom';
 import { CREATE_USER, LOG_IN } from '../../queries';
 import Form from './Form';
@@ -24,14 +25,14 @@ const SignUp = () => {
   const [tokenExists, setTokenExists] = useState(false);
 
   const [createUser] = useMutation(CREATE_USER, {
-    onCompleted: () => {
-      LogInQuery();
+    onCompleted: (data: any) => {
+      checkErrors(data)
     }
   });
 
-  const [logIn, { data, loading }] = useLazyQuery(LOG_IN, {
+  const [logIn, { loading }] = useLazyQuery(LOG_IN, {
     onCompleted: (data: any) => {
-      storeToken();
+      storeToken(data);
     }
   });
 
@@ -39,9 +40,17 @@ const SignUp = () => {
     logIn({ variables: { email, password } });
   }
 
+  const checkErrors = (data: any) => {
+    if (data?.createUser?.err || data.createUser?.hasCreated === false) {
+      toast.error(`${data?.createUser?.err?.errorDesc}, use another email`, { duration: 2300, });
+    } else if (data.createUser?.hasCreated === true) {
+      LogInQuery();
+    }
+  }
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    createUser({ variables: { email, userName, password } });
+    createUser({ variables: { user: userName, email, password } });
   }
 
   const handleInputChange = (e: any) => {
@@ -56,7 +65,7 @@ const SignUp = () => {
     }
   }
 
-  const storeToken = () => {
+  const storeToken = (data: any) => {
     if (loading) {
       console.log('loading');
     }

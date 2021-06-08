@@ -3,6 +3,7 @@ import { useLazyQuery } from '@apollo/client';
 import { LOG_IN } from '../../queries/index';
 import { Redirect } from 'react-router-dom';
 import Form from './Form';
+import toast from 'react-hot-toast';
 const SignIn = () => {
 
   const [token, setToken] = useState(null);
@@ -17,10 +18,11 @@ const SignIn = () => {
     }
   }, [tokenOnRenderExists]);
 
-  const [logIn, { data, loading }] = useLazyQuery(LOG_IN, {
+  const [logIn, { loading }] = useLazyQuery(LOG_IN, {
     onCompleted: (data: any) => {
-      storeToken();
-    }
+      storeToken(data);
+    },
+    fetchPolicy: "network-only"
   });
 
   const [email, setEmail] = useState('');
@@ -41,7 +43,7 @@ const SignIn = () => {
     logIn({ variables: { email, password } });
   }
 
-  const storeToken = () => {
+  const storeToken = (data: any) => {
     if (loading) {
       console.log('loading');
     }
@@ -50,6 +52,9 @@ const SignIn = () => {
     setToken(tokenLS);
     if (tokenLS !== '' || null || undefined) {
       setTokenExists(true);
+    }
+    if (data?.accountLogIn?.err) {
+      toast.error(`${data?.accountLogIn?.err?.errorDesc}`, { duration: 2000, });
     }
   }
 

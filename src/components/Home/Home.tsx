@@ -1,6 +1,7 @@
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import { Dialog, Transition } from '@headlessui/react';
 import { useEffect, useState, Fragment } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { Redirect } from 'react-router-dom';
 import { GET_FCARDS, DELETE_FCARD, GET_ONE_FCARD, EDIT_FCARD, CREATE_FCARD } from '../../queries/index';
 import Navbar from '../Navbar/Navbar';
@@ -36,10 +37,18 @@ const Home = () => {
 
   //delete graphql query
   const [deleteFCard] = useMutation(DELETE_FCARD, {
-    onCompleted: async (): Promise<void> => {
-      await refetch();
+    onCompleted: async (data: any): Promise<void> => {
+      handleDeleteError(data)
     }
   });
+
+  const handleDeleteError = async (data: any): Promise<void> => {
+    if (data?.deleteFCard?.err || data?.deleteFCard?.FCardHasDeleted === false) {
+      toast.error(`${data?.deleteFCard?.err?.errorDesc}`, { duration: 2000, });
+    } else if (data?.deleteFCard?.FCardHasDeleted === true) {
+      await refetch();
+    }
+  }
 
   const handleDeleteClick = async (e: any): Promise<void> => {
     e.preventDefault();
@@ -81,10 +90,18 @@ const Home = () => {
 
   //edit one mutation grapghql
   const [editFCard] = useMutation(EDIT_FCARD, {
-    onCompleted: async (): Promise<void> => {
-      await refetch();
+    onCompleted: async (data: any): Promise<void> => {
+      handleEditError(data);
     }
   });
+
+  const handleEditError = async (data: any): Promise<void> => {
+    if (data?.editFCard?.err || data?.editFCard?.FCardHasEdited === false) {
+      toast.error(`${data?.editFCard?.err?.errorDesc}`, { duration: 2000, });
+    } else if (data?.editFCard?.FCardHasEdited === true) {
+      await refetch();
+    }
+  }
 
   const editFcardMutation = async (): Promise<void> => {
     await editFCard({ variables: { id: CardId, token: jwt, title: Title, content: Content } });
@@ -282,6 +299,10 @@ const Home = () => {
           </Transition>
         </div>
       </div >
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
     </>
   );
 }
